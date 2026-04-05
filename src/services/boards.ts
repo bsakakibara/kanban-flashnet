@@ -1,5 +1,5 @@
-import { api } from "../lib/api";
-import { Board, Column } from "../types";
+import { api } from '@/lib/api'
+import { Board, Column } from '@/types'
 
 
 export const boardsService = {

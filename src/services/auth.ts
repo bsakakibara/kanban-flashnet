@@ -1,7 +1,7 @@
 
 import Cookies from 'js-cookie'
-import { LoginRequest, LoginResponse } from '../types'
-import { api } from '../lib/api'
+import { LoginRequest, LoginResponse } from '@/types'
+import { api } from '@/lib/api'
 
 export const authService = {
   async login(data: LoginRequest): Promise<LoginResponse> {

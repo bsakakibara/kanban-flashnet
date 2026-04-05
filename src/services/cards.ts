@@ -1,5 +1,5 @@
-import { api } from "../lib/api"
-import { Card, CardHistory } from "../types"
+import { api } from '@/lib/api'
+import { Card, CardHistory } from '@/types'
 
 export const cardsService = {
   async get(id: string): Promise<Card> {
