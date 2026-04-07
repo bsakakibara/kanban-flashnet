@@ -27,7 +27,7 @@ export default function LoginPage() {
     } catch (err) {
       const error = err as AxiosError<ApiError>
       if (error.response?.status === 403) {
-        setError('Sua conta esta inativa. Entre em contato com o administrador.')
+        setError('Sua conta esta inativa. Fale com o administrador.')
       } else if (error.response?.status === 401) {
         setError('Usuario ou senha incorretos. Tente novamente.')
       } else {

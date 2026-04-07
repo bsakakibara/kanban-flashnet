@@ -24,7 +24,7 @@ export interface Board {
     id: string
     name: string
     description: string
-    ower: { id: string; username: string }
+    owner: { id: string; username: string }
     my_permission: 'viewer' | 'editor' | 'admin'
     members_count: number
     cards_count: number
@@ -57,6 +57,7 @@ export interface Card {
     tags: string[]
     is_archived: boolean
     created_by: { id: string; username: string }
+    column?: { id: string; name: string }
     created_at: string
     updated_at: string
 }
