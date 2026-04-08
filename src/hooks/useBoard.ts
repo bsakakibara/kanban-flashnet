@@ -12,6 +12,22 @@ interface MoveModal {
   toColumnName: string
 }
 
+// Dado um over.id, retorna a coluna correta:
+// - se over.id é id de uma coluna → retorna essa coluna
+// - se over.id é id de um card → retorna a coluna que contém esse card
+function findTargetColumn(columns: Column[], overId: string): Column | undefined {
+  // Primeiro tenta achar por id de coluna
+  const byColumnId = columns.find(c => c.id === overId)
+  if (byColumnId) return byColumnId
+
+  // Se não, acha pela coluna que contém o card com esse id
+  return columns.find(c => c.cards?.some(card => card.id === overId))
+}
+
+function findSourceColumn(columns: Column[], cardId: string): Column | undefined {
+  return columns.find(c => c.cards?.some(card => card.id === cardId))
+}
+
 export function useBoard(boardId: string) {
   const queryClient = useQueryClient()
 
@@ -52,24 +68,34 @@ export function useBoard(boardId: string) {
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event
     setActiveCard(null)
+
     if (!over || !board) return
 
-    const fromColumn = board.columns.find((c: Column) =>
-      c.cards?.some((card: Card) => card.id === active.id)
-    )
-    const toColumn = board.columns.find((c: Column) =>
-      c.id === over.id || c.cards?.some((card: Card) => card.id === over.id)
-    )
+    const columns: Column[] = board.columns || []
 
+    const fromColumn = findSourceColumn(columns, active.id as string)
+    const toColumn = findTargetColumn(columns, over.id as string)
+
+    // Mesma coluna ou coluna não encontrada — ignora
     if (!fromColumn || !toColumn || fromColumn.id === toColumn.id) return
 
-    const activeCards = toColumn.cards?.filter((c: Card) => !c.is_archived) || []
-    if (toColumn.wip_limit !== null && activeCards.length >= toColumn.wip_limit) {
+    // Card arquivado não pode ser movido
+    const draggedCard = fromColumn.cards?.find((c: Card) => c.id === active.id)
+    if (draggedCard?.is_archived) return
+
+    // Verificar WIP limit
+    const activeCardsInTarget = toColumn.cards?.filter((c: Card) => !c.is_archived) || []
+    if (
+      toColumn.wip_limit !== null &&
+      toColumn.wip_limit !== undefined &&
+      activeCardsInTarget.length >= toColumn.wip_limit
+    ) {
       setObsError(`Limite WIP atingido na coluna "${toColumn.name}" (${toColumn.wip_limit} cards)`)
-      setTimeout(() => setObsError(''), 4000)
+      setTimeout(() => setObsError(''), 5000)
       return
     }
 
+    // Abrir modal de observação
     setMoveModal({
       cardId: active.id as string,
       fromColumn: fromColumn.name,

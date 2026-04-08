@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter, useParams } from 'next/navigation'
 import { DndContext, PointerSensor, useSensor, useSensors, DragOverlay } from '@dnd-kit/core'
-import { Activity, LogOut } from 'lucide-react'
+import { Activity, ArrowLeft, LogOut } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useBoard } from '@/hooks/useBoard'
 import { KanbanColumn } from '@/components/kanban/KanbanColumn'
@@ -116,8 +116,18 @@ export default function BoardPage() {
                     </div>
                     <div
                         onClick={() => router.push('/boards')}
-                        style={{ padding: '8px 10px', borderRadius: '6px', fontSize: '13px', color: '#888780', cursor: 'pointer' }}>
-                        ← Voltar
+                        style={{
+                            padding: '8px 10px',
+                            borderRadius: '6px',
+                            fontSize: '13px',
+                            color: '#888780',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '6px'
+                        }}
+                    >
+                        <ArrowLeft size={13} /> Voltar
                     </div>
                     <div
                         style={{
@@ -218,7 +228,14 @@ export default function BoardPage() {
                     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                         <div style={{ flex: 1, padding: '24px', display: 'flex', gap: '16px', overflowX: 'auto', alignItems: 'flex-start' }}>
                             {columns.map((column: Column) => (
-                                <KanbanColumn key={column.id} column={column} permission={permission} onAddCard={handleOpenAddCard} onOpenCard={handleOpenCard} />
+                                <KanbanColumn
+                                    key={column.id}
+                                    column={column}
+                                    permission={permission}
+                                    onAddCard={handleOpenAddCard}
+                                    onOpenCard={handleOpenCard}
+                                    mobile={true}
+                                />
                             ))}
                         </div>
                         <DragOverlay>
@@ -261,7 +278,7 @@ export default function BoardPage() {
                         <button
                             onClick={() => router.push('/boards')}
                             style={{ background: 'none', border: 'none', color: '#888780', cursor: 'pointer', fontSize: '18px' }}>
-                            ←
+                            <ArrowLeft size={13} />
                         </button>
                         <span style={{ fontSize: '15px', fontWeight: '600', color: '#FFFFFF' }}>{board?.name}</span>
                     </div>
@@ -345,10 +362,18 @@ export default function BoardPage() {
 
                 {activeColumn && (
                     <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                        <KanbanColumn column={activeColumn} permission={permission} onAddCard={handleOpenAddCard} onOpenCard={handleOpenCard} />
+                        <div style={{ width: '100%', flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                            <KanbanColumn
+                                column={activeColumn}
+                                permission={permission}
+                                onAddCard={handleOpenAddCard}
+                                onOpenCard={handleOpenCard}
+                                mobile={true}
+                            />
+                        </div>
                         <DragOverlay>
-                            {activeCard && <div
-                                style={{
+                            {activeCard && (
+                                <div style={{
                                     backgroundColor: '#FFFFFF',
                                     border: '2px dashed #378ADD',
                                     borderRadius: '8px',
@@ -356,10 +381,10 @@ export default function BoardPage() {
                                     fontSize: '13px',
                                     fontWeight: '500',
                                     color: '#1C1C1B'
-                                }}
-                            >
-                                {activeCard.title}
-                            </div>}
+                                }}>
+                                    {activeCard.title}
+                                </div>
+                            )}
                         </DragOverlay>
                     </DndContext>
                 )}

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { cardsService } from '@/services/cards'
 import { CardHistory } from '@/types'
+import { Archive } from 'lucide-react'
 
 interface CardDetailModalProps {
     cardId: string
@@ -369,10 +370,14 @@ export default function CardDetailModal({ cardId, boardId, permission, onClose }
                                             border: '1px solid #F09595',
                                             borderRadius: '6px',
                                             cursor: 'pointer',
-                                            color: '#A32D2D'
+                                            color: '#A32D2D',
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
                                         }}
                                     >
-                                        {archiveMutation.isPending ? 'Arquivando...' : '◻ Arquivar card'}
+                                        <Archive size={13} color="#A32D2D" />
+                                        {archiveMutation.isPending ? 'Arquivando...' : 'Arquivar card'}
                                     </button>
                                 </div>
                             )}
